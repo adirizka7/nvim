@@ -38,13 +38,13 @@ Plug('neovim/nvim-lspconfig')
 Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate'})
 
 -- -- Linter(s)
-Plug 'dense-analysis/ale'
+Plug('dense-analysis/ale')
 
 -- -- Theme(s)
 Plug('pineapplegiant/spaceduck')
-Plug 'nvim-lualine/lualine.nvim'
+Plug('nvim-lualine/lualine.nvim')
 -- -- Icons
-Plug 'nvim-tree/nvim-web-devicons'
+Plug('nvim-tree/nvim-web-devicons')
 
 -- -- Prettier file formatting.
 Plug('prettier/vim-prettier', { ['do'] = 'yarn install --frozen-lockfile --production' })
@@ -58,9 +58,6 @@ vim.call('plug#end')
 
 -- -- Telescope
 local actions = require('telescope.actions')
-local finders = require('telescope.finders')
-
-local input = {'rg', '--'}
 
 require('telescope').setup{
   defaults = {
@@ -69,7 +66,6 @@ require('telescope').setup{
         ['qq'] = actions.close
       }
     },
-    finder = finders.new_oneshot_job(input),
   },
 }
 require('telescope').load_extension('fzf')
@@ -88,10 +84,22 @@ require'lspconfig'.gopls.setup{}
 
 -- -- -- Format on save.
 vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = "*.go", -- Only format on save for Go files.
+  pattern = "*.go",
   callback = function()
-    vim.lsp.buf.format()
-  end,
+    local params = vim.lsp.util.make_range_params()
+    params.context = {only = {"source.organizeImports"}}
+
+    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
+    for cid, res in pairs(result or {}) do
+      for _, r in pairs(res.result or {}) do
+        if r.edit then
+          local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
+          vim.lsp.util.apply_workspace_edit(r.edit, enc)
+        end
+      end
+    end
+    vim.lsp.buf.format({async = false})
+  end
 })
 
 -- -- -- LSP Rename
@@ -187,7 +195,7 @@ function run_go_test_from_cursor()
   end
 
   -- Build the Go test command
-  local cmd = "go test ./" .. subdir .. " -run " .. test_function
+  local cmd = "go test ./" .. subdir .. " -run " .. test_function .. " -coverprofile /tmp/cover.out"
 
   print(cmd)
   -- Run the command and capture its output
@@ -206,9 +214,38 @@ function run_go_test_from_cursor()
 
   vim.cmd('redraw!')
   print("Looks good man!")
+
+  -- TODO: Make it asynchronous
+  cmd = "go tool cover -html /tmp/cover.out -o /tmp/cover.html"
+  vim.fn.systemlist(cmd)
 end
 
 vim.api.nvim_set_keymap('n', '<leader>gt', ':lua run_go_test_from_cursor()<enter>', { noremap = true, silent = true })
+
+function open_coverage_in_browser()
+  -- Build the Go test command
+  local cmd = "open /tmp/cover.html"
+
+  print(cmd)
+  -- Run the command and capture its output
+  -- TODO: Make it asynchronous
+  local output = vim.fn.systemlist(cmd)
+
+  -- If the command fails, alert the user
+  if vim.v.shell_error ~= 0 then
+    -- Populate the quickfix list with the output
+    vim.fn.setqflist({}, 'r', { title = 'Coverage error', lines = output })
+
+    -- Open the quickfix list
+    vim.cmd("copen")
+    return
+  end
+
+  vim.cmd('redraw!')
+  print("Coverage opened in browser!")
+end
+
+vim.api.nvim_set_keymap('n', '<leader>cov', ':lua open_coverage_in_browser()<enter>', { noremap = true, silent = true })
 
 -- Miscs
 
