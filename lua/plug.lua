@@ -6,6 +6,7 @@ vim.call('plug#begin')
 
 -- -- Git
 Plug('airblade/vim-gitgutter')
+Plug('tpope/vim-fugitive')
 
 -- -- Telescope & deps
 Plug('nvim-lua/plenary.nvim')
