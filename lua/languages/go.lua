@@ -18,8 +18,6 @@ function alternate_test_file()
   vim.cmd('edit ' .. filepath)
 end
 
-vim.api.nvim_set_keymap('n', '<leader>alt', ':lua alternate_test_file()<enter>', { silent = true })
-
 local function get_current_function_name()
     local node = ts_utils.get_node_at_cursor()
     while node do
@@ -77,13 +75,11 @@ function run_go_test_from_cursor()
   vim.fn.systemlist(cmd)
 end
 
-vim.api.nvim_set_keymap('n', '<leader>gt', ':lua run_go_test_from_cursor()<enter>', { noremap = true, silent = true })
-
+-- TODO: Make a generic function to open file in browser.
 function open_coverage_in_browser()
   -- Build the Go test command
   local cmd = "open /tmp/cover.html"
 
-  print(cmd)
   -- Run the command and capture its output
   -- TODO: Make it asynchronous
   local output = vim.fn.systemlist(cmd)
@@ -102,45 +98,21 @@ function open_coverage_in_browser()
   print("Coverage opened in browser!")
 end
 
-vim.api.nvim_set_keymap('n', '<leader>cov', ':lua open_coverage_in_browser()<enter>', { noremap = true, silent = true })
+-- Create an autocommand group to avoid duplicates.
+vim.api.nvim_create_augroup("GoFileMappings", { clear = true })
 
--- Miscs
+-- Set the key mapping for Go file type.
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "go",  -- This applies to Go files only.
+    callback = function()
+        -- Open alternate test file.
+        vim.api.nvim_set_keymap('n', '<leader>alt', ':lua alternate_test_file()<enter>', { silent = true, noremap = true })
 
--- -- Show file name with line number and copy to clipboard.
-vim.api.nvim_set_keymap('n', '<C-g>', ':lua get_file_name_with_line_number()<enter>', { noremap = true, silent = true })
+        -- Run go test for the test function under the cursor.
+        vim.api.nvim_set_keymap('n', '<leader>gt', ':lua run_go_test_from_cursor()<enter>', { noremap = true, silent = true })
 
-function get_file_name_with_line_number()
-    local filename = vim.fn.expand('%:.')
-    local linenumber = vim.fn.line('.')
-    local result = filename .. ':' .. linenumber
-    vim.fn.setreg('*', result)
-    vim.api.nvim_out_write(result .. "\n")
-end
-
--- -- Open the current file name and line number in Github UI.
-vim.api.nvim_set_keymap('n', '<leader>ogh', ':lua open_current_line_in_github_ui()<enter>', { noremap = true, silent = true })
-
-function open_current_line_in_github_ui()
-    -- Get the current file name and line number
-    local filename = vim.fn.expand('%:.')
-    local linenumber = vim.fn.line('.')
-    
-    -- Use vim.loop.spawn for asynchronous execution
-    vim.loop.spawn("gh", {
-        args = {"browse", filename .. ":" .. linenumber}
-    }, function(code, signal)
-        -- Notify the user after the command is completed
-        if code == 0 then
-            vim.schedule(function()
-                vim.api.nvim_out_write("Opened in browser: " .. filename .. " at line " .. linenumber .. "\n")
-            end)
-            return
-        end
-
-        vim.schedule(function()
-            vim.api.nvim_err_writeln("Error opening GitHub link")
-        end)
-    end)
-
-    vim.api.nvim_out_write("Opening in browser: " .. filename .. " at line " .. linenumber .. "\n")
-end
+        -- Open coverage file in browser.
+        vim.api.nvim_set_keymap('n', '<leader>cov', ':lua open_coverage_in_browser()<enter>', { noremap = true, silent = true })
+    end,
+    group = "GoFileMappings",
+})
