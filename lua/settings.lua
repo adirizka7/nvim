@@ -14,8 +14,8 @@ vim.keymap.set('i', 'JK', '<Esc>', options)
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "qf",
     callback = function()
-        vim.keymap.set('n', 'J', '<cmd>cnext<CR>\'"<C-w>w', { noremap = true, silent = true})
-        vim.keymap.set('n', 'K', '<cmd>cprev<CR>\'"<C-w>w', { noremap = true, silent = true})
+        vim.keymap.set('n', 'J', '<cmd>cnext<CR>\'"<C-w>w', { noremap = true, silent = true, buffer = true })
+        vim.keymap.set('n', 'K', '<cmd>cprev<CR>\'"<C-w>w', { noremap = true, silent = true, buffer = true })
     end
 })
 
