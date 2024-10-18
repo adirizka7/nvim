@@ -22,4 +22,4 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 -- -- LSP Rename
-vim.api.nvim_set_keymap('n', '<leader>rename', ':lua vim.lsp.buf.rename()<enter>', {})
+vim.api.nvim_set_keymap('n', '<leader>rn', ':lua vim.lsp.buf.rename()<enter>', {})
