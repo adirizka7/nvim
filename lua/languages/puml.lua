@@ -26,6 +26,7 @@ function generate_puml()
     end
 
     vim.cmd('redraw!')
+    print("PlantUML Image is generated!")
 end
 
 function open_puml_in_browser()
