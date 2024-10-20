@@ -34,4 +34,7 @@ Plug('prettier/vim-prettier', { ['do'] = 'yarn install --frozen-lockfile --produ
 -- -- Language packs
 Plug('sheerun/vim-polyglot')
 
+-- -- PlantUML
+Plug('adirizka7/vim-puml')
+
 vim.call('plug#end')
