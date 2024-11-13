@@ -6,6 +6,9 @@ vim.wo.relativenumber = true
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 
+-- open split on the right side
+vim.opt.splitright = true
+
 -- map jk to escape key
 vim.keymap.set('i', 'jk', '<Esc>', options)
 vim.keymap.set('i', 'JK', '<Esc>', options)

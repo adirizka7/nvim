@@ -37,4 +37,8 @@ Plug('sheerun/vim-polyglot')
 -- -- PlantUML
 Plug('adirizka7/vim-puml')
 
+-- -- Copilot
+Plug('zbirenbaum/copilot.lua')
+Plug('CopilotC-Nvim/CopilotChat.nvim', { ['branch'] = 'canary' })
+
 vim.call('plug#end')

@@ -59,6 +59,8 @@ function run_go_test_from_cursor()
 
   -- If the command fails, alert the user
   if vim.v.shell_error ~= 0 then
+    vim.cmd('redraw!')
+    print("Looks like something needs some fixing 👀")
     -- Populate the quickfix list with the output
     vim.fn.setqflist({}, 'r', { title = 'Go Test Output', lines = output })
 
@@ -68,7 +70,8 @@ function run_go_test_from_cursor()
   end
 
   vim.cmd('redraw!')
-  print("Looks good man!")
+  vim.cmd('cclose')
+  print("Looking good 🚀")
 
   -- TODO: Make it asynchronous
   cmd = "go tool cover -html /tmp/cover.out -o /tmp/cover.html"
