@@ -12,3 +12,10 @@ local chat = require("CopilotChat")
 vim.keymap.set({'n', 'v'}, '<leader>cc', chat.toggle, {})
 vim.keymap.set('n', '<leader>ccd', ':CopilotChatDocs<enter>', { silent = true, noremap = true })
 vim.keymap.set('n', '<leader>cct', ':CopilotChatTests<enter>', { silent = true, noremap = true })
+
+vim.api.nvim_create_autocmd('BufEnter', {
+    pattern = 'copilot-*',
+    callback = function()
+        vim.opt_local.relativenumber = true
+    end
+})
