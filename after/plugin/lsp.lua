@@ -1,5 +1,12 @@
 require'lspconfig'.phpactor.setup{}
-require'lspconfig'.gopls.setup{}
+require'lspconfig'.pyright.setup{}
+require'lspconfig'.gopls.setup{
+  settings = {
+    gopls = {
+      buildFlags =  {"-tags=integration"}
+    }
+  }
+}
 
 -- Go format on save with goimports logic.
 vim.api.nvim_create_autocmd("BufWritePre", {
