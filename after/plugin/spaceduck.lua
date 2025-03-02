@@ -5,3 +5,4 @@ vim.api.nvim_set_hl(0, 'LineNr', { fg = '#5A6AC5' })
 vim.api.nvim_set_hl(0, 'WinSeparator', { fg = '#0f111b' })
 -- -- Follow terminal background color.
 vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
+vim.api.nvim_set_hl(0, "EndOfBuffer", { fg = "#30365F", bg = "none" })

@@ -28,9 +28,6 @@ Plug('nvim-lualine/lualine.nvim')
 -- -- Icons
 Plug('nvim-tree/nvim-web-devicons')
 
--- -- Prettier file formatting.
-Plug('prettier/vim-prettier', { ['do'] = 'yarn install --frozen-lockfile --production' })
-
 -- -- Language packs
 Plug('sheerun/vim-polyglot')
 
@@ -39,6 +36,9 @@ Plug('adirizka7/vim-puml')
 
 -- -- Copilot
 Plug('zbirenbaum/copilot.lua')
-Plug('CopilotC-Nvim/CopilotChat.nvim', { ['branch'] = 'canary' })
+Plug('CopilotC-Nvim/CopilotChat.nvim', { ['branch'] = 'main' })
+
+-- -- Pasting Image
+Plug('HakonHarnes/img-clip.nvim')
 
 vim.call('plug#end')

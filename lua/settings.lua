@@ -40,3 +40,12 @@ local undodir = vim.opt.undodir:get()[1]
 if vim.fn.isdirectory(undodir) == 0 then
     vim.fn.mkdir(undodir, "p")
 end
+
+-- Reload NVIM Config from anywhere
+vim.api.nvim_create_user_command('ReloadConfig', function()
+    vim.cmd("source " .. vim.env.MYVIMRC)
+    vim.notify("Neovim config reloaded!", vim.log.levels.INFO)
+end, {})
+
+-- Open link under the cursor
+vim.keymap.set("n", "gl", ":silent !open <cfile><CR>", { noremap = true, silent = true })
