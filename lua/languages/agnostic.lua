@@ -36,3 +36,19 @@ end
 
 -- -- Show file name with line number and copy to clipboard.
 vim.api.nvim_set_keymap('n', '<C-g>', ':lua get_file_name_with_line_number()<enter>', { noremap = true, silent = true })
+
+-- -- Show diagnostic hints.
+vim.diagnostic.config({
+  virtual_text = true,
+  signs = true,
+  underline = true,
+})
+
+vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float)
+
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+  pattern = { ".env.*", "*.env" },
+  callback = function()
+    vim.bo.filetype = "sh"
+  end,
+})

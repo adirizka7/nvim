@@ -46,7 +46,7 @@ function prompt_fleeting_note()
     end)
 end
 
-vim.api.nvim_set_keymap("n", "<leader>zc", ":lua prompt_fleeting_note()<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>zn", ":lua prompt_fleeting_note()<CR>", { noremap = true, silent = true })
 
 function open_todo()
   -- Ensure the repo path is absolute

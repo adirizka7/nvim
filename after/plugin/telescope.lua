@@ -1,5 +1,4 @@
 local actions = require('telescope.actions')
-local zettelkasten = require("zettelkasten.zettelkasten")
 
 require('telescope').setup{
   defaults = {
@@ -28,4 +27,12 @@ vim.keymap.set('n', '<leader>nff', function()
 end, { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>nfg', function()
     builtin.live_grep({ cwd = vim.fn.stdpath("config") })
+end, { noremap = true, silent = true })
+
+-- Zettelkasten
+vim.keymap.set('n', '<leader>zff', function()
+    builtin.find_files({ cwd = vim.fn.expand("~/GIT/zettelkasten") })
+end, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>zfg', function()
+    builtin.live_grep({ cwd = vim.fn.expand("~/GIT/zettelkasten") })
 end, { noremap = true, silent = true })

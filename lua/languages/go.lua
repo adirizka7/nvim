@@ -1,5 +1,4 @@
 -- Go
-local ts_utils = require('nvim-treesitter.ts_utils')
 
 function alternate_test_file()
   -- get the current buffer's file path
@@ -19,7 +18,12 @@ function alternate_test_file()
 end
 
 local function get_current_function_name()
-    local node = ts_utils.get_node_at_cursor()
+    -- The current buffer may not have an active Treesitter parser.
+    local ok, node = pcall(vim.treesitter.get_node)
+    if not ok then
+        return nil
+    end
+
     while node do
         if node:type() == 'function_declaration' then
             local func_name_node = node:child(1)
@@ -30,6 +34,17 @@ local function get_current_function_name()
         node = node:parent()
     end
     return nil
+end
+
+local function get_build_tags()
+  local lines = vim.fn.getline(1, 5)  -- check first 5 lines
+  for _, line in ipairs(lines) do
+    local tag = line:match("^//go:build%s+(.+)$")
+    if tag then
+      return tag
+    end
+  end
+  return nil
 end
 
 function run_go_test_from_cursor()
@@ -50,9 +65,14 @@ function run_go_test_from_cursor()
   end
 
   -- Build the Go test command
-  local cmd = "go test ./" .. subdir .. " -run " .. test_function .. " -coverprofile /tmp/cover.out"
+  local tags = get_build_tags()
+  local cmd = { 'go', 'test', '-mod=vendor' }
+  if tags then
+    vim.list_extend(cmd, { '-tags', tags })
+  end
+  vim.list_extend(cmd, { './' .. subdir, '-run', test_function, '-coverprofile', '/tmp/cover.out' })
 
-  print(cmd)
+  print(table.concat(cmd, ' '))
   -- Run the command and capture its output
   -- TODO: Make it asynchronous
   local output = vim.fn.systemlist(cmd)
@@ -62,7 +82,12 @@ function run_go_test_from_cursor()
     vim.cmd('redraw!')
     print("Looks like something needs some fixing 👀")
     -- Populate the quickfix list with the output
-    vim.fn.setqflist({}, 'r', { title = 'Go Test Output', lines = output })
+    vim.fn.setqflist({}, 'r', {
+      title = 'Go Test Output',
+      items = vim.tbl_map(function(line)
+        return { text = line }  -- Only set the text field, avoiding errorformat parsing
+      end, output),
+    })
 
     -- Open the quickfix list
     vim.cmd("copen")
