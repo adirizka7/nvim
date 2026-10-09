@@ -2,9 +2,28 @@
 
 Personal Neovim configuration.
 
-## Setup
+## Prerequisites
 
-Requirements: Neovim, Git, curl, make, and a C compiler. Network access is required to download plugins and Treesitter parsers.
+- Neovim
+- Git
+- Curl
+- Make
+- A C compiler
+- [Tree-sitter CLI](https://tree-sitter.github.io/tree-sitter/creating-parsers/1-getting-started.html#installation)
+
+Verify the CLI is available before running setup:
+
+```sh
+tree-sitter --version
+Homebrew users: install tree-sitter-cli, which provides the
+tree-sitter executable required by nvim-treesitter.
+
+brew install tree-sitter-cli
+
+The tree-sitter Homebrew formula provides the library only; it does not
+install the CLI executable.
+
+## Setup
 
 ```sh
 git clone https://github.com/adirizka7/nvim.git ~/.config/nvim
