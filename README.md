@@ -31,7 +31,7 @@ cd ~/.config/nvim
 make setup
 ```
 
-`make setup` installs the configured plugins and the Bash Treesitter parser required by `curl.nvim`.
+`make setup` installs the configured plugins, the Bash Treesitter parser required by `curl.nvim`, and the Go parser used by the Go test mapping.
 
 Open Neovim after setup:
 
