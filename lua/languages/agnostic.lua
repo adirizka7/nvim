@@ -41,7 +41,19 @@ vim.api.nvim_set_keymap('n', '<C-g>', ':lua get_file_name_with_line_number()<ent
 vim.diagnostic.config({
   virtual_text = true,
   signs = true,
-  underline = true,
+  -- Neovim 0.12 can retain unclamped underline positions for unloaded buffers.
+  -- Render only after loading, when diagnostic.show() can clamp them to EOF.
+  underline = function(_, bufnr)
+    return vim.api.nvim_buf_is_loaded(bufnr)
+  end,
+})
+
+vim.api.nvim_create_autocmd('BufReadPost', {
+  group = vim.api.nvim_create_augroup('LoadedBufferDiagnostics', { clear = true }),
+  desc = 'Redraw cached diagnostics with loaded-buffer bounds',
+  callback = function(args)
+    vim.diagnostic.show(nil, args.buf)
+  end,
 })
 
 vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float)
