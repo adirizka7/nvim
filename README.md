@@ -40,3 +40,15 @@ nvim
 ```
 
 For optional plugin integrations, install the tools they use, such as `jq` for formatted Curl responses, language servers, formatters, and TeX tools for Vimtex.
+
+### Svelte language server
+
+The Svelte LSP configuration requires `svelteserver`, provided by this npm package:
+
+```sh
+npm install --global svelte-language-server
+```
+
+Restart Neovim after installation. Verify that `:echo executable('svelteserver')` returns `1`.
+
+If you use a Node version manager such as fnm, install the package for the Node version used to launch Neovim. Switching Node versions may require reinstalling it.
